@@ -1,11 +1,20 @@
 provider "azurerm" {
 }
 
+provider "azuread" {
+  
+}
+
+
 terraform {
   backend "azurerm" {}
 }
 
-resource "azurerm_resource_group" "aks" {
-  name     = "x-rg-euw-aks-hack"
+module "aks" {
+  source = "../.."
   location = "westeurope"
-}
+  client_id = "made-up-value"
+  prefix = "k8scluster"
+  }
+
+
