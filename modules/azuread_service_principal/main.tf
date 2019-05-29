@@ -6,8 +6,13 @@ resource "azuread_service_principal" "aks_service_principal" {
   application_id = "${azuread_application.aks_service_principal.application_id}"
 }
 
+resource "random_string" "password" {
+  length  = 32
+  special = true
+}
+
 resource "azuread_service_principal_password" "aks_service_principal" {
   service_principal_id = "${azuread_service_principal.aks_service_principal.id}"
-  value = "somereallycomplexpasswordnoreallythisishardtoguess99!"
-  end_date_relative = "8760h"
+  value = "${random_string.password.result}"
+  end_date_relative = "17520h" #password expires in 2 years
 }
