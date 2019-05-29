@@ -13,7 +13,7 @@ terraform {
 module "aks" {
   source = "../.."
   location = "westeurope"
-  client_id = "made-up-value"
+  //client_id = "made-up-value"
   prefix = "k8scluster"
   }
 

@@ -4,8 +4,8 @@ locals {
 
 module "azuread_service_principal" {
   source = "./modules/azuread_service_principal"
-  service_principal_name = "${local.service_principal_name}"
-  
+  enabled = "${var.client_id == "" ? 1 : 0}"
+  service_principal_name = "${local.service_principal_name}"  
 }
 
 
