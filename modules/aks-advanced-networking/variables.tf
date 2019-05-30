@@ -1,3 +1,9 @@
+
+variable "enabled" {
+    description = "Determine whether this module should be run or not."
+    default = 0
+}
+
 variable "prefix" {
   description = "The prefix for the resources created in the specified Azure Resource Group"
   default     = "cluster"
@@ -6,6 +12,14 @@ variable "prefix" {
 variable "location" {
   default     = "eastus"
   description = "The location for the AKS deployment"
+}
+
+variable "resource_group_name" {
+  description = "The resource group where the AKS cluster will be deployed"
+}
+
+variable "ssh_public_key" {
+  description = "SSH public key for the Linux VM nodes"
 }
 
 variable "client_id" {
@@ -19,20 +33,18 @@ variable "client_secret" {
 }
 
 variable "rbac-enabled" {
-  type = "string"
   description = "Enable role based access control on the Kubernetes cluster"
   default = "true"
 }
 
-variable "network_type" {
-  type = "string"
-  default = "basic"
+variable "kubernetes_version" {
+    description = "The version of Kubernetes to be deployed"
 }
 
-variable "network_plugin" {
-  type = "map"
-  default = {
-    basic = "kubenet"
-    advanced = "azure"
-  }
+variable "log_analytics_enabled" {
+    description = "Should Log Analytics be enabled as part of this deployment"
+    default = "true"
+}
+variable "log_analytics_workspace_id" {
+    description = "ID for the Log Analytics workspace"
 }

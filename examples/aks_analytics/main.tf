@@ -15,6 +15,7 @@ module "aks" {
   location = "westeurope"
   //client_id = "made-up-value"
   prefix = "k8scluster"
+  network_type = "basic"
   }
 
 
