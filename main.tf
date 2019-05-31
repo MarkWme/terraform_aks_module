@@ -25,6 +25,7 @@ resource "azurerm_resource_group" "aks" {
 }
 
 resource "azurerm_log_analytics_workspace" "aks" {
+  count = "${var.log_analytics_enabled == "true" && var.log_analytics_workspace_id == "" ? 1 : 0}"
   name                = "${var.prefix}-log-analytics-workspace"
   location            = "${azurerm_resource_group.aks.location}"
   resource_group_name = "${azurerm_resource_group.aks.name}"
@@ -44,14 +45,15 @@ module "aks-basic-networking" {
   client_secret = "${var.client_secret == "" ? element(module.azuread_service_principal.client_secret,0) : var.client_secret}"
   ssh_public_key = "${replace(tls_private_key.ssh.public_key_openssh, "\n", "")}"
   kubernetes_version = "${data.azurerm_kubernetes_service_versions.current.latest_version}"
-  log_analytics_enabled = "true"
-  log_analytics_workspace_id = "${azurerm_log_analytics_workspace.aks.id}"
+  rbac_enabled = "${var.rbac_enabled}"
+  log_analytics_enabled = "${var.log_analytics_enabled}"
+  log_analytics_workspace_id = "${var.log_analytics_workspace_id == "" ? azurerm_log_analytics_workspace.aks.id : var.log_analytics_workspace_id}"
 }
 
 module "aks-advanced-networking" {
   source = "./modules/aks-advanced-networking"
   enabled = "${var.network_type == "advanced" ? 1: 0}"
-resource_group_name = "${azurerm_resource_group.aks.name}"
+  resource_group_name = "${azurerm_resource_group.aks.name}"
   client_id = "${var.client_id == "" ? element(module.azuread_service_principal.client_id,0) : var.client_id}"
   client_secret = "${var.client_secret == "" ? element(module.azuread_service_principal.client_secret,0) : var.client_secret}"
   ssh_public_key = "${replace(tls_private_key.ssh.public_key_openssh, "\n", "")}"

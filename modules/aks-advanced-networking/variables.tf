@@ -32,7 +32,7 @@ variable "client_secret" {
   default = ""
 }
 
-variable "rbac-enabled" {
+variable "rbac_enabled" {
   description = "Enable role based access control on the Kubernetes cluster"
   default = "true"
 }
@@ -47,4 +47,5 @@ variable "log_analytics_enabled" {
 }
 variable "log_analytics_workspace_id" {
     description = "ID for the Log Analytics workspace"
+    default = ""
 }

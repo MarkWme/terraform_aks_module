@@ -6,7 +6,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     dns_prefix = "${var.prefix}"
 
   linux_profile {
-    admin_username = "guvnor"
+    admin_username = "${var.linux_admin_user_name}"
 
     ssh_key {
       key_data = "${var.ssh_public_key}"
@@ -17,11 +17,11 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   agent_pool_profile {
-    name            = "apool"
-    count           = 3
-    vm_size         = "Standard_B2ms"
+    name            = "nodepool01"
+    count           = "${var.agent_pool_vm_count}"
+    vm_size         = "${var.agent_pool_vm_size}"
     os_type         = "Linux"
-    os_disk_size_gb = 30
+    os_disk_size_gb = "${var.agent_pool_vm_disk_size}"
   }
 
   service_principal {
@@ -35,12 +35,12 @@ resource "azurerm_kubernetes_cluster" "aks" {
       log_analytics_workspace_id = "${var.log_analytics_workspace_id}"
     }
     http_application_routing {
-      enabled = false
+      enabled = "${var.http_application_routing_enabled}"
     }
   }
 
   role_based_access_control {
-    enabled = "${var.rbac-enabled}"
+    enabled = "${var.rbac_enabled}"
   }
 
   kubernetes_version = "${var.kubernetes_version}"

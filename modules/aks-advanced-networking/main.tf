@@ -25,7 +25,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   agent_pool_profile {
-    name            = "apool"
+    name            = "nodepool01"
     count           = 3
     vm_size         = "Standard_B2ms"
     os_type         = "Linux"
@@ -49,7 +49,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   role_based_access_control {
-    enabled = "${var.rbac-enabled}"
+    enabled = "${var.rbac_enabled}"
   }
 
   kubernetes_version = "${var.kubernetes_version}"
