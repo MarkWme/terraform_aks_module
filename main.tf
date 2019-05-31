@@ -1,5 +1,6 @@
 locals {
   service_principal_name = "aks-${var.prefix}-service-principal"
+  log_analytics_workspace_name = "${var.prefix}-log-analytics-workspace"
 }
 
 module "azuread_service_principal" {
@@ -25,8 +26,8 @@ resource "azurerm_resource_group" "aks" {
 }
 
 resource "azurerm_log_analytics_workspace" "aks" {
-  count = "${var.log_analytics_enabled == "true" && var.log_analytics_workspace_id == "" ? 1 : 0}"
-  name                = "${var.prefix}-log-analytics-workspace"
+  count = "${var.log_analytics_enabled == "true" && var.log_analytics_name == "" ? 1 : 0}"
+  name                = "${local.log_analytics_workspace_name}"
   location            = "${azurerm_resource_group.aks.location}"
   resource_group_name = "${azurerm_resource_group.aks.name}"
   sku                 = "Standalone"
@@ -35,6 +36,12 @@ resource "azurerm_log_analytics_workspace" "aks" {
 
 data "azurerm_kubernetes_service_versions" "current" {
   location = "${azurerm_resource_group.aks.location}"
+}
+
+data "azurerm_log_analytics_workspace" "aks_log_analytics" {
+  count = "${var.log_analytics_enabled == "true" ? 1 : 0}"
+  name = "${var.log_analytics_name == "" ? local.log_analytics_workspace_name : var.log_analytics_name}"
+  resource_group_name = "${var.log_analytics_resource_group_name == "" ? azurerm_resource_group.aks.name : var.log_analytics_resource_group_name}"
 }
 
 module "aks-basic-networking" {
@@ -47,7 +54,7 @@ module "aks-basic-networking" {
   kubernetes_version = "${data.azurerm_kubernetes_service_versions.current.latest_version}"
   rbac_enabled = "${var.rbac_enabled}"
   log_analytics_enabled = "${var.log_analytics_enabled}"
-  log_analytics_workspace_id = "${var.log_analytics_workspace_id == "" ? azurerm_log_analytics_workspace.aks.id : var.log_analytics_workspace_id}"
+  log_analytics_workspace_id = "${data.azurerm_log_analytics_workspace.aks_log_analytics.id}"
 }
 
 module "aks-advanced-networking" {
@@ -59,5 +66,5 @@ module "aks-advanced-networking" {
   ssh_public_key = "${replace(tls_private_key.ssh.public_key_openssh, "\n", "")}"
   kubernetes_version = "${data.azurerm_kubernetes_service_versions.current.latest_version}"
   log_analytics_enabled = "true"
-  log_analytics_workspace_id = "${azurerm_log_analytics_workspace.aks.id}"
+  log_analytics_workspace_id = "${data.azurerm_log_analytics_workspace.aks_log_analytics.id}"
 }

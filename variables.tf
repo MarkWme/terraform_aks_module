@@ -78,7 +78,12 @@ variable "log_analytics_enabled" {
     default = "false"
 }
 
-variable "log_analytics_workspace_id" {
-    description = "ID for the Log Analytics workspace"
+variable "log_analytics_name" {
+    description = "The name of the Log Analytics workspace to use"
+    default = ""
+}
+
+variable "log_analytics_resource_group_name" {
+    description = "The name of the resource group where the Log Analytics workspace is deployed"
     default = ""
 }
