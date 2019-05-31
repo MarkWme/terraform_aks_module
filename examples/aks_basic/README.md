@@ -4,3 +4,6 @@ This script shows how to perform a basic deployment of AKS using the AKS module.
 
 - Deployment to the East US Azure region
 - The latest version of Kubernetes supported in the region selected
+- Basic networking (kubenet)
+- Service Principal required for AKS is automatically generated
+- SSH key for the nodes is automatically generated
